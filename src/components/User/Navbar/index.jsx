@@ -3,6 +3,9 @@ import style from "./index.module.scss";
 import { useContext } from "react";
 import { UserContextItem } from "../../../services/context/UserContext";
 import { Link, useNavigate } from "react-router-dom";
+import { TextField } from "@mui/material";
+import Input from "antd/es/input/Input";
+import { Search, SearchOutlined } from "@mui/icons-material";
 const UserNavbar = () => {
   let { user, setUser } = useContext(UserContextItem);
   const navigate = useNavigate();
@@ -21,14 +24,31 @@ const UserNavbar = () => {
     >
       <div className="container">
         <Row className="navbar">
-          <Col span={20}>
-            <img
+          <Col span={6}>
+            <Link
               style={{
-                width: "50px",
+                marginRight: "20px",
               }}
-              src={user.profilePicture}
-              alt=""
+              to="/user/Home"
+            >
+              <img
+                style={{
+                  width: "50px",
+                }}
+                src={user.profilePicture}
+                alt=""
+              />
+            </Link>
+          </Col>
+          <Col span={14}>
+            <Input
+              style={{
+                width: "50%",
+                margin: "0 auto",
+              }}
+              placeholder="Search"
             />
+            <Button variant="contained">Search</Button>
           </Col>
           <Col span={4}>
             <Link to="/user/UserPage">

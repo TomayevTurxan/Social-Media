@@ -1,9 +1,15 @@
 import style from "./index.module.scss";
 import { Button, Card, Col, Row } from "antd";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContextItem } from "../../../services/context/UserContext";
 import { Box, Input, Modal, Typography } from "@mui/material";
 import { useState } from "react";
+import {
+  updateUseryByIDPatch,
+  updateUseryByIDPut,
+} from "../../../services/api/user";
+import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 const UserPage = () => {
   let { user, setUser } = useContext(UserContextItem);
   const [open, setOpen] = useState(false);
@@ -12,7 +18,24 @@ const UserPage = () => {
     email: user.email,
     fullName: user.fullName,
     bio: user.bio,
+    profilePicture: user.profilePicture,
+    followers: user.followers,
+    requests: user.requests,
+    posts: user.posts,
+    stories: user.posts,
+    isVerified: user.isVerified,
+    isAdmin: user.isAdmin,
+    following: user.followings,
+    id: user.id,
   });
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, [setUser]);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -28,8 +51,23 @@ const UserPage = () => {
     p: 4,
   };
 
-  const handleSaveChanges = () => {
-    setUser(editedUser);
+  const handleSaveChanges = async () => {
+    try {
+      const res = await updateUseryByIDPut(user.id, editedUser);
+      console.log("Success", res);
+      localStorage.setItem("user", JSON.stringify(editedUser));
+      setUser(editedUser);
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your profile has been edited",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+
     handleClose();
   };
   return (
@@ -37,9 +75,11 @@ const UserPage = () => {
       <Row
         style={{
           alignItems: "center",
+          justifyContent: "center",
+          margin: "20px 0px",
         }}
       >
-        <img className={style.img} src={user.profilePicture} alt="" />
+          <img className={style.img} src={user.profilePicture} alt="" />
         <div
           style={{
             display: "flex",
@@ -69,7 +109,7 @@ const UserPage = () => {
             <label htmlFor="username">Username:</label>
             <Input
               onChange={(e) => {
-                setEditedUser({...editedUser,username:e.target.value});
+                setEditedUser({ ...editedUser, username: e.target.value });
               }}
               id="username"
               type="text"
@@ -80,7 +120,7 @@ const UserPage = () => {
             <label htmlFor="fullName">Full Name:</label>
             <Input
               onChange={(e) => {
-                setEditedUser({...editedUser,fullName:e.target.value});
+                setEditedUser({ ...editedUser, fullName: e.target.value });
               }}
               id="fullName"
               type="text"
@@ -92,11 +132,23 @@ const UserPage = () => {
             <label htmlFor="email">Email:</label>
             <Input
               onChange={(e) => {
-                setEditedUser({...editedUser,email:e.target.value});
+                setEditedUser({ ...editedUser, email: e.target.value });
               }}
               id="email"
               type="text"
               value={editedUser.email}
+            />
+          </Col>
+
+          <Col span={24}>
+            <label htmlFor="bio">Bio:</label>
+            <Input
+              onChange={(e) => {
+                setEditedUser({ ...editedUser, bio: e.target.value });
+              }}
+              id="bio"
+              type="text"
+              value={editedUser.bio}
             />
           </Col>
           <Button onClick={handleClose}>Cancel</Button>

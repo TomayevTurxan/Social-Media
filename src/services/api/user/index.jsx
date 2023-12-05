@@ -22,3 +22,28 @@ export const getCategoryByID = async(id)=>{
     return users;
 }
 
+
+//Put user
+export const updateUseryByIDPut = async (id, updatedData) => {
+    let updatedCategory;
+    await axios.put(`${BASE_URL}/Users/${id}`, updatedData)
+        .then((response) => {
+            updatedCategory = response.data;
+        })
+        .catch((error) => {
+            console.error('Error updating user:', error);
+        });
+    return updatedCategory;
+}
+
+export const updateUseryByIDPatch = async (id, updatedData) => {
+    let updatedUser;
+    await axios.patch(`${BASE_URL}/Users/${id}`, updatedData)
+        .then((response) => {
+            updatedUser = response.data;
+        })
+        .catch((error) => {
+            console.error('Error updating user:', error);
+        });
+    return updatedUser;
+}

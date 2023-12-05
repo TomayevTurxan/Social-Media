@@ -12,12 +12,14 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import MuiAlert from "@mui/material/Alert";
 import { useFormik } from "formik";
 import { BASE_URL } from "../../services/api/BASE_URL";
 import { loginSchema } from "../../validation/loginValidation";
-import { Alert, Snackbar } from "@mui/material";
+import { Snackbar } from "@mui/material";
+import { UserContext } from "../../services/context/UsersContext";
+import Swal from "sweetalert2";
 
 function Copyright(props) {
   return (
@@ -43,6 +45,7 @@ const defaultTheme = createTheme();
 
 export default function Register() {
   const navigate = useNavigate();
+  const { users, setUsers } = useContext(UserContext);
   const [successMessage, setSuccessMessage] = useState("");
   const [isAdmin, setisAdmin] = useState(false);
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -105,8 +108,29 @@ export default function Register() {
       password: "",
     },
     onSubmit: async (values, actions) => {
-      actions.resetForm();
       try {
+        const existingUserResponse = await fetch(
+          `${BASE_URL}/Users?username=${values.currentUsername}&email=${values.email}`
+        );
+
+        if (existingUserResponse.ok) {
+          const existingUsers = await existingUserResponse.json();
+
+          if (existingUsers.length > 0) {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "This account is already available",
+            });
+            return;
+          } else {
+            actions.resetForm();
+          }
+        } else {
+          console.error("Error:", existingUserResponse.statusText);
+          return;
+        }
+
         const response = await fetch(
           "https://656dfda1bcc5618d3c245df9.mockapi.io/Users",
           {
@@ -233,7 +257,9 @@ export default function Register() {
                     onChange={formik.handleChange}
                     value={formik.values.password}
                     error={formik.touched.password && formik.errors.password}
-                    helperText={formik.touched.password && formik.errors.password}
+                    helperText={
+                      formik.touched.password && formik.errors.password
+                    }
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -257,11 +283,9 @@ export default function Register() {
                 Sign Up
               </Button>
               <Grid container justifyContent="flex-end">
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    Already have an account? Sign in
-                  </Link>
-                </Grid>
+                <Link to="/Login">
+                  <Grid>Already have an account? Sign in</Grid>
+                </Link>
               </Grid>
             </Box>
           </Box>

@@ -5,17 +5,20 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ROUTES } from "./routes";
 import UserContextProvider from "./services/context/UsersContext";
 import UserContextProviderItem from "./services/context/UserContext";
-import "./App.css" 
+import "./App.css";
+import SearchContextProvider from "./services/context/Search";
 const routes = createBrowserRouter(ROUTES);
 
 const App = () => {
   return (
     <>
-      <UserContextProviderItem>
-        <UserContextProvider>
-          <RouterProvider router={routes} />
-        </UserContextProvider>
-      </UserContextProviderItem>
+      <SearchContextProvider>
+        <UserContextProviderItem>
+          <UserContextProvider>
+            <RouterProvider router={routes} />
+          </UserContextProvider>
+        </UserContextProviderItem>
+      </SearchContextProvider>
     </>
   );
 };
