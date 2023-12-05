@@ -10,7 +10,7 @@ const UserNavbar = () => {
   const Logout = () => {
     navigate("/Login");
     setUser(null);
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify([]));
   };
 
   return (
@@ -21,7 +21,7 @@ const UserNavbar = () => {
     >
       <div className="container">
         <Row className="navbar">
-          <Col span={21}>
+          <Col span={20}>
             <img
               style={{
                 width: "50px",
@@ -30,7 +30,7 @@ const UserNavbar = () => {
               alt=""
             />
           </Col>
-          <Col span={3}>
+          <Col span={4}>
             <Link to="/user/UserPage">
               <span
                 style={{

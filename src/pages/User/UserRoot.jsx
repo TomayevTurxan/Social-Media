@@ -10,7 +10,7 @@ const UserRoot = () => {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
-    if (storedUser) {
+    if (storedUser && storedUser.id) {
       setUser(storedUser);
     } else {
       navigate("/Login");
