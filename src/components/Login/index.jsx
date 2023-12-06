@@ -28,7 +28,7 @@ function Login() {
     getAllUsers().then((res) => {
       setUsers(res);
     });
-  }, []);
+  }, [setUsers]);
   console.log("users", users);
 
   const handleLogin = () => {
