@@ -3,7 +3,7 @@ import { PropTypes } from "prop-types";
 export const UserContext = createContext("");
 
 const UserContextProvider = ({children})=>{
-    let[users,setUsers] = useState(null);
+    let[users,setUsers] = useState([]);
     return <UserContext.Provider value={{users,setUsers}}>
         {children}
     </UserContext.Provider>

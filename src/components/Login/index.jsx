@@ -11,42 +11,43 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { getAllUsers } from "../../services/api/user";
 import { UserContext } from "../../services/context/UsersContext";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContextItem } from "../../services/context/UserContext";
+import { getAllUsers } from "../../services/api/user";
 
 function Login() {
   const navigate = useNavigate();
   let { users, setUsers } = useContext(UserContext);
-  let {user,setUser} = useContext(UserContextItem)
+  let { setUser } = useContext(UserContextItem);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  
   useEffect(() => {
-    getAllUsers().then((res) => {
-      setUsers(res);
-    });
-  }, [setUsers]);
+    getAllUsers().then((data) => {
+        setUsers(data);
+      });
+  }, []);
   console.log("users", users);
 
   const handleLogin = () => {
     const foundUser = users.find(
       (user) => user.username === username && user.password === password
-    );
-    console.log("founduser", foundUser);
-    if (foundUser) {
+      );
+      console.log("founduser", foundUser);
+      if (foundUser) {
       alert("XOS GELDINIZ " + foundUser.username);
       localStorage.setItem("user", JSON.stringify(foundUser));
       setUser(foundUser);
-
+      
       navigate("/user/Home");
     } else {
       setError("BELE BIR ISTTIFADECI YOXDUR.");
     }
   };
-
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     handleLogin();

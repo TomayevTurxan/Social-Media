@@ -2,14 +2,12 @@ import style from "./index.module.scss";
 import { Button, Card, Col, Row } from "antd";
 import { useContext, useEffect } from "react";
 import { UserContextItem } from "../../../services/context/UserContext";
-import { Box, Input, Modal, Typography } from "@mui/material";
+import { Box, Input, Modal} from "@mui/material";
 import { useState } from "react";
 import {
-  updateUseryByIDPatch,
   updateUseryByIDPut,
 } from "../../../services/api/user";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
 const UserPage = () => {
   let { user, setUser } = useContext(UserContextItem);
   const [open, setOpen] = useState(false);

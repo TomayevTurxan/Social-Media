@@ -1,0 +1,15 @@
+.searchDiv {
+    width: 50%;
+    position: absolute;
+    background-color: white;
+    z-index: 99;
+    border-radius: 10px;
+    transform: scale(1);
+    transition: 1s;
+    height: 0px;
+}
+
+li {
+    text-decoration: none;
+    list-style: none;
+}

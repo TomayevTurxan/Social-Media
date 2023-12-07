@@ -35,15 +35,3 @@ export const updateUseryByIDPut = async (id, updatedData) => {
         });
     return updatedCategory;
 }
-
-export const updateUseryByIDPatch = async (id, updatedData) => {
-    let updatedUser;
-    await axios.patch(`${BASE_URL}/Users/${id}`, updatedData)
-        .then((response) => {
-            updatedUser = response.data;
-        })
-        .catch((error) => {
-            console.error('Error updating user:', error);
-        });
-    return updatedUser;
-}

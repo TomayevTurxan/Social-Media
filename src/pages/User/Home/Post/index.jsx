@@ -8,19 +8,12 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Collapse from "@mui/material/Collapse";
-import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useFormik } from "formik";
-import { UserContext } from "../../../../services/context/UsersContext";
 import moment from "moment/moment";
+import { UserContext } from "../../../../services/context/UsersContext";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -37,7 +30,6 @@ const ExpandMore = styled((props) => {
 const Post = () => {
   let { user, setUser } = useContext(UserContextItem);
   let { users, setUsers } = useContext(UserContext);
-  console.log("userdiiii", user);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -45,6 +37,7 @@ const Post = () => {
       setUser(JSON.parse(storedUser));
     }
   }, [setUser]);
+  // console.log("userdiiii", users);
 
   const formik = useFormik({
     initialValues: {
@@ -79,7 +72,7 @@ const Post = () => {
       localStorage.setItem("user", JSON.stringify(user));
     },
   });
-  console.log("userslardi", users);
+  // console.log("userslardi", users);
 
   return (
     <>
@@ -159,7 +152,7 @@ const Post = () => {
                 />
                 <h3
                   style={{
-                    marginLeft: "13px",
+                    marginLeft: "28px",
                   }}
                 >
                   {user.username}
