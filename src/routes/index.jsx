@@ -1,6 +1,7 @@
 import Login from "../components/Login";
 import Register from "../components/Register";
 import Home from "../pages/User/Home";
+import SearchUser from "../pages/User/SearchUser";
 import UserPage from "../pages/User/UserPage";
 import UserRoot from "../pages/User/UserRoot";
 
@@ -28,6 +29,10 @@ export const ROUTES = [
       {
         path: "UserPage",
         element: <UserPage />,
+      },
+      {
+        path: "SearchUser",
+        element: <SearchUser/>,
       },
     ],
   },

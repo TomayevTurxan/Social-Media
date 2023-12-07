@@ -6,12 +6,14 @@ import { Link, useNavigate } from "react-router-dom";
 import Input from "antd/es/input/Input";
 import { UserContext } from "../../../services/context/UsersContext";
 import { getAllUsers } from "../../../services/api/user";
+import { FilterUserContext } from "../../../services/context/FilteredUser";
 
 const UserNavbar = () => {
   let { user, setUser } = useContext(UserContextItem);
   let { users, setUsers } = useContext(UserContext);
   let [search, setSearch] = useState("");
-  let [filteredUsers, setFilteredUsers] = useState();
+  let { filteredUsers, setFilteredUsers } = useContext(FilterUserContext);
+
   const navigate = useNavigate();
 
   const Logout = () => {
@@ -25,7 +27,7 @@ const UserNavbar = () => {
       setUsers(data);
     });
   }, []);
-
+  
   const handleSearch = (searchTerm) => {
     const filtered = users.filter((item) =>
       item.username
@@ -38,10 +40,10 @@ const UserNavbar = () => {
   const clearSearchResults = () => {
     setFilteredUsers([]);
   };
-  console.log("filteredUsers", user);
-  console.log("filteredUsers", filteredUsers);
-  console.log("search", search);
-  console.log("users", users);
+  // console.log("filteredUsers", user);
+  // console.log("filteredUsers", filteredUsers);
+  // console.log("search", search);
+  // console.log("users", users);
   // const filteredUsers =[]
   // const filteredUsers = users.filter((item) =>
   //   item.username.trim().toLowerCase().includes(search.trim().toLowerCase())
@@ -76,8 +78,8 @@ const UserNavbar = () => {
         console.log("Follow request sent");
       }
     }
-    const updatedUsers = users.map((user) => (user.id === obj.id ? obj : user))
-    setUsers(updatedUsers)
+    const updatedUsers = users.map((user) => (user.id === obj.id ? obj : user));
+    setUsers(updatedUsers);
     // console.log("obj",obj)
     const response = await fetch(
       `https://656dfda1bcc5618d3c245df9.mockapi.io/Users/${obj.id}`,
@@ -95,6 +97,7 @@ const UserNavbar = () => {
 
     return await response.json();
   };
+
   return (
     <Row
       style={{
@@ -138,9 +141,12 @@ const UserNavbar = () => {
                   // }
                 }}
               />
-              <Button style={{
-                backgroundColor:"#059DC0"
-              }} onClick={() => handleSearch(search)}>
+              <Button
+                style={{
+                  backgroundColor: "#E1C340",
+                }}
+                onClick={() => handleSearch(search)}
+              >
                 Search
               </Button>
             </div>
@@ -168,21 +174,23 @@ const UserNavbar = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <img
+                        <Link to="/user/SearchUser">
+                          <div
                             style={{
-                              marginRight: "10px",
+                              display: "flex",
+                              alignItems: "center",
                             }}
-                            src={item.profilePicture}
-                            alt=""
-                          />
-                          {item.username}
-                        </div>
+                          >
+                            <img
+                              style={{
+                                marginRight: "10px",
+                              }}
+                              src={item.profilePicture}
+                              alt=""
+                            />
+                            {item.username}
+                          </div>
+                        </Link>
                         <button
                           data-id={item.id}
                           onClick={(e) => {
@@ -220,9 +228,13 @@ const UserNavbar = () => {
                 {user.username}
               </span>
             </Link>
-            <Button onClick={Logout} type="primary" style={{
-              backgroundColor: "red"
-            }}>
+            <Button
+              onClick={Logout}
+              type="primary"
+              style={{
+                backgroundColor: "red",
+              }}
+            >
               Log Out
             </Button>
           </Col>

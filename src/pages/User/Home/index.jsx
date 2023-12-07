@@ -12,13 +12,7 @@ const Home = () => {
   const { search, setSearch } = useContext(SearchContext);
   return (
     <Row>
-      <Col span={7}>
-        <Card title="Users" extra={<a href="#">More</a>} style={{ width: 300 }}>
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
-        </Card>
-      </Col>
+      <Col span={7}></Col>
       <Col span={10}>
         <Post/>
       </Col>

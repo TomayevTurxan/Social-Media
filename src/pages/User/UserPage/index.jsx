@@ -2,14 +2,15 @@ import style from "./index.module.scss";
 import { Button, Card, Col, Row } from "antd";
 import { useContext, useEffect } from "react";
 import { UserContextItem } from "../../../services/context/UserContext";
-import { Box, Input, Modal} from "@mui/material";
+import { Box, Input, Modal } from "@mui/material";
 import { useState } from "react";
-import {
-  updateUseryByIDPut,
-} from "../../../services/api/user";
+import { updateUseryByIDPut } from "../../../services/api/user";
 import Swal from "sweetalert2";
+import { FilterUserContext } from "../../../services/context/FilteredUser";
+import { UserContext } from "../../../services/context/UsersContext";
 const UserPage = () => {
   let { user, setUser } = useContext(UserContextItem);
+  let { users, setUsers } = useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [editedUser, setEditedUser] = useState({
     username: user.username,
@@ -68,6 +69,28 @@ const UserPage = () => {
 
     handleClose();
   };
+
+
+  const handleAccept = (requestSender) => {
+    console.log(requestSender.id)
+    const requestIndex = user.requests.find(
+      (request) => request.userID === requestSender.id
+    );
+   
+   const updatedRequests = [
+    ...user.requests.slice(0, requestIndex),
+    ...user.requests.slice(requestIndex + 1),
+  ];
+  console.log("updatedRequests",updatedRequests)
+
+  setUser((prevUser) => ({
+    ...prevUser,
+    requests: updatedRequests,
+    followers: [...prevUser.followers, requestSender],
+  }));
+  };
+
+
   return (
     <>
       <Row
@@ -77,7 +100,53 @@ const UserPage = () => {
           margin: "20px 0px",
         }}
       >
-          <img className={style.img} src={user.profilePicture} alt="" />
+        <Col span={10}>
+          <Card
+            title="Takip istekleri"
+            extra={<a href="#">More</a>}
+            style={{ width: 300 }}
+          >
+            {user.requests.map((requestUserId) => {
+              console.log("requestUserId", requestUserId.userID);
+              const requestSender = users.find(
+                (user) => user.id === requestUserId.userID
+              );
+              console.log("requestSender", requestSender);
+              if (requestSender) {
+                if (
+                  requestSender.requests &&
+                  requestSender.requests.length > 0
+                ) {
+                  return (
+                    <div
+                      key={requestUserId.userID}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}
+                    >
+                      <p>{requestSender.fullName}</p>
+
+                      <Button onClick={() => handleAccept(requestSender)}>
+                        Accept
+                      </Button>
+                      {/* <Button onClick={() => handleReject(requestSender)}>
+                        Reject
+                      </Button> */}
+                    </div>
+                  );
+                } else {
+                  console.log(
+                    `User ${requestSender.fullName} has no follow requests`
+                  );
+                }
+              }
+              return null;
+            })}
+          </Card>
+        </Col>
+        <img className={style.img} src={user.profilePicture} alt="" />
         <div
           style={{
             display: "flex",

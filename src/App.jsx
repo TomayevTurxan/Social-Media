@@ -7,18 +7,21 @@ import UserContextProvider from "./services/context/UsersContext";
 import UserContextProviderItem from "./services/context/UserContext";
 import "./App.css";
 import SearchContextProvider from "./services/context/Search";
+import FilterUserContextProvider from "./services/context/FilteredUser";
 const routes = createBrowserRouter(ROUTES);
 
 const App = () => {
   return (
     <>
-      <SearchContextProvider>
-        <UserContextProviderItem>
-          <UserContextProvider>
-            <RouterProvider router={routes} />
-          </UserContextProvider>
-        </UserContextProviderItem>
-      </SearchContextProvider>
+      <FilterUserContextProvider>
+        <SearchContextProvider>
+          <UserContextProviderItem>
+            <UserContextProvider>
+              <RouterProvider router={routes} />
+            </UserContextProvider>
+          </UserContextProviderItem>
+        </SearchContextProvider>
+      </FilterUserContextProvider>
     </>
   );
 };
