@@ -12,8 +12,8 @@ export const getAllUsers = async()=>{
     return users;
 }
 
-//get one category (id)
-export const getCategoryByID = async(id)=>{
+//get one user (id)
+export const getAllUsersbyID = async(id)=>{
     let users;
     await axios.get(`${BASE_URL}/Users/${id}`)
     .then((response)=>{
