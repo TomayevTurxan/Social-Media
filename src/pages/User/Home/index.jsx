@@ -13,7 +13,7 @@ const Home = () => {
   return (
     <Row>
       <Col span={7}></Col>
-      <Col span={10}>
+      <Col xs={24} sm={24} md={10}>
         <Post/>
       </Col>
       <Col span={7}></Col>

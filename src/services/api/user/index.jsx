@@ -35,3 +35,22 @@ export const updateUseryByIDPut = async (id, updatedData) => {
         });
     return updatedCategory;
 }
+
+
+export const blockUser = async (userId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/Users/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error blocking user");
+      }
+    } catch (error) {
+      console.error("Error blocking user:", error);
+      throw error;
+    }
+  };

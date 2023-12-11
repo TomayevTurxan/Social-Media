@@ -6,12 +6,10 @@ import { Avatar, Box, Input, Modal } from "@mui/material";
 import { useState } from "react";
 import { updateUseryByIDPut } from "../../../services/api/user";
 import Swal from "sweetalert2";
-import { FilterUserContext } from "../../../services/context/FilteredUser";
 import { UserContext } from "../../../services/context/UsersContext";
-import ModalFollow from "./Modal";
 const UserPage = () => {
   let { user, setUser } = useContext(UserContextItem);
-  let { users, setUsers } = useContext(UserContext);
+  let { users } = useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [editedUser, setEditedUser] = useState({
     username: user.username,
@@ -44,7 +42,7 @@ const UserPage = () => {
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => setOpen2(false);
 
-//followings modal
+  //followings modal
   const [open3, setOpen3] = useState(false);
   const handleOpen3 = () => setOpen3(true);
   const handleClose3 = () => setOpen3(false);
@@ -81,16 +79,16 @@ const UserPage = () => {
     handleClose();
   };
 
-  const handleAccept = async(requestSender) => {
+  const handleAccept = async (requestSender) => {
     const requestIndex = user.requests.findIndex(
       (request) => request.userID === requestSender.id
     );
-    console.log("requestSenderID", requestSender.id);
+  
     const updatedRequests = [
       ...user.requests.slice(0, requestIndex),
       ...user.requests.slice(requestIndex + 1),
     ];
-
+  
     setUser((prevUser) => ({
       ...prevUser,
       requests: updatedRequests,
@@ -99,24 +97,30 @@ const UserPage = () => {
         { id: Date.now(), userID: requestSender.id },
       ],
     }));
-
-    fetch(`https://656dfda1bcc5618d3c245df9.mockapi.io/Users/${user.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...user,
-        requests: updatedRequests,
-        followers: [
-          ...user.followers,
-          { id: Date.now().toString(), userID: requestSender.id },
-        ],
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+  
+    try {
+      const response = await fetch(
+        `https://656dfda1bcc5618d3c245df9.mockapi.io/Users/${user.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...user,
+            requests: updatedRequests,
+            followers: [
+              ...user.followers,
+              { id: Date.now().toString(), userID: requestSender.id },
+            ],
+          }),
+        }
+      );
+  
+      if (response.ok) {
+        const data = await response.json();
         console.log("Success", data);
+  
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -128,6 +132,7 @@ const UserPage = () => {
             ],
           })
         );
+  
         setUser({
           ...user,
           requests: updatedRequests,
@@ -136,75 +141,59 @@ const UserPage = () => {
             { id: Date.now().toString(), userID: requestSender.id },
           ],
         });
+  
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: "Already Ulvi is your friemd",
+          title: "Already Ulvi is your friend",
           showConfirmButton: false,
           timer: 1500,
         });
-      })
-      .catch((error) => {
-        console.error("Error updating user:", error);
-      });
+      } else {
+        console.error("Error updating user:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
 
 
 
-   
+    const updatedFollowings = [
+      ...requestSender.followings,
+      { id: Date.now().toString(), userID: user.id },
+    ];
+  
+    const updatedSender = { ...requestSender, followings: updatedFollowings };
+    const updatedCurrentUser = {
+      ...user,
+      requests: updatedRequests,
+      followers: [...user.followers, { id: Date.now(), userID: requestSender.id }],
+    };
+  
+    try {
+      const responseSender = await updateUseryByIDPut(requestSender.id, updatedSender);
+      if (responseSender.ok) {
+        console.log("erer", await responseSender.json());
+      } else {
+        console.error("reer:", responseSender.statusText);
+      }
+  
+      const responseCurrentUser = await updateUseryByIDPut(user.id, updatedCurrentUser);
+      if (responseCurrentUser.ok) {
+        console.log("err", await responseCurrentUser.json());
+      } else {
+        console.error("err", responseCurrentUser.statusText);
+      }
+  
+      setUser(updatedCurrentUser);
+  
+    } catch (error) {
+      console.error("reererer", error);
+    }
+  };
+  
 
-//   const updatedFollowings = [
-//     ...requestSender.followings,
-//     { id: Date.now().toString(), userID: requestSender.id },
-//   ];
-
-//   setUser((prevUser) => ({
-//     ...prevUser,
-//     followers: [
-//       ...requestSender.followers,
-//       { id: Date.now().toString(), userID: requestSender.id },
-//     ],
-//     followings: updatedFollowings,
-//   }));
-// console.log("updatedFollowings",updatedFollowings)
-//   try {
-//     await updateUseryByIDPut(requestSender.id, {
-//       ...requestSender,
-//       followers: [
-//         ...requestSender.followers,
-//         { id: Date.now().toString(), userID: requestSender.id },
-//       ],
-//       followings: updatedFollowings,
-//     });
-//     localStorage.setItem(
-//       "user",
-//       JSON.stringify({
-//         ...requestSender,
-//         followers: [
-//           ...requestSender.followers,
-//           { id: Date.now().toString(), userID: requestSender.id },
-//         ],
-//         followings: [
-//           ...requestSender.followings,
-//           { id: Date.now().toString(), userID: requestSender.id },
-//         ],
-//       })
-//     );
-//     setUser({
-//       ...requestSender,
-//       followers: [
-//         ...requestSender.followers,
-//         { id: Date.now().toString(), userID: requestSender.id },
-//       ],
-//       followings: [
-//         ...requestSender.followings,
-//         { id: Date.now().toString(), userID: requestSender.id },
-//       ],
-//     });
-
-//   } catch (error) {
-//     console.error("Error accepting request:", error);
-//   }
-//   }
+  //reject elemek
   const handleReject = (requestSender) => {
     const requestIndex = user.requests.findIndex(
       (request) => request.userID === requestSender.id
@@ -244,6 +233,84 @@ const UserPage = () => {
         console.error("Error updating user:", error);
       });
   };
+
+  const RemoveFollower = async (followerID) => {
+    try {
+      const updatedFollowers = user.followers.filter(
+        (follower) => follower.userID !== followerID
+      );
+  
+      setUser((prevUser) => ({ ...prevUser, followers: updatedFollowers }));
+  
+      const response = await fetch(
+        `https://656dfda1bcc5618d3c245df9.mockapi.io/Users/${user.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...user,
+            followers: updatedFollowers,
+          }),
+        }
+      );
+  
+      console.log("Response status:", response.status);
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success", data);
+  
+        const follower = users.find((user) => user.id === followerID);
+        const updatedFollowings = follower.followings.filter(
+          (following) => following.userID !== user.id
+        );
+  
+        setUser((prevUser) => ({
+          ...prevUser,
+          followings: updatedFollowings,
+        }));
+  
+        await fetch(
+          `https://656dfda1bcc5618d3c245df9.mockapi.io/Users/${followerID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...follower,
+              followings: updatedFollowings,
+            }),
+          }
+        );
+  
+  
+        handleClose2();
+  
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Follower removed successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+  
+      } else {
+        console.error("Error removing follower:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error removing follower:", error);
+    }
+  };
+  
+  
+  
+  
+  
+  
+  
   return (
     <>
       <Row
@@ -253,11 +320,14 @@ const UserPage = () => {
           margin: "20px 0px",
         }}
       >
-        <Col span={7}>
+        <Col xs={24} sm={24} md={12} lg={12}>
           <Card
             title="Takip istekleri"
             extra={<a href="#">More</a>}
-            style={{ width: 300 }}
+            style={{
+              width: "50%",
+              margin: "10px auto"
+            }}
           >
             {user.requests.map((requestUserId) => {
               console.log("user", user.requests);
@@ -288,7 +358,7 @@ const UserPage = () => {
             })}
           </Card>
         </Col>
-        <Col span={10}>
+        <Col xs={24} sm={24} md={12} lg={12}>
           <div
             style={{
               display: "flex",
@@ -338,11 +408,9 @@ const UserPage = () => {
             </Card>
           </div>
         </Col>
-        <Col span={7}>qwqwd</Col>
       </Row>
 
-
-     {/* followersModal */}
+      {/* followersModal */}
       <Modal
         open={open2}
         onClose={handleClose2}
@@ -376,7 +444,9 @@ const UserPage = () => {
                       <Avatar src={followerUser?.profilePicture} />
                       <span>{followerUser?.username}</span>
                     </div>
-                    <Button>Remove</Button>
+                    <Button onClick={() => RemoveFollower(item.userID)}>
+                      Remove
+                    </Button>
                   </li>
                 </ul>
               </>
@@ -485,8 +555,6 @@ const UserPage = () => {
           <Button onClick={handleSaveChanges}>Save Changes</Button>
         </Box>
       </Modal>
-
-
     </>
   );
 };

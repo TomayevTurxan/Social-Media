@@ -8,20 +8,23 @@ import UserContextProviderItem from "./services/context/UserContext";
 import "./App.css";
 import SearchContextProvider from "./services/context/Search";
 import FilterUserContextProvider from "./services/context/FilteredUser";
+import AdminContextProviderItem from "./services/context/adminContext";
 const routes = createBrowserRouter(ROUTES);
 
 const App = () => {
   return (
     <>
-      <FilterUserContextProvider>
-        <SearchContextProvider>
-          <UserContextProviderItem>
-            <UserContextProvider>
-              <RouterProvider router={routes} />
-            </UserContextProvider>
-          </UserContextProviderItem>
-        </SearchContextProvider>
-      </FilterUserContextProvider>
+      <AdminContextProviderItem>
+        <FilterUserContextProvider>
+          <SearchContextProvider>
+            <UserContextProviderItem>
+              <UserContextProvider>
+                <RouterProvider router={routes} />
+              </UserContextProvider>
+            </UserContextProviderItem>
+          </SearchContextProvider>
+        </FilterUserContextProvider>
+      </AdminContextProviderItem>
     </>
   );
 };

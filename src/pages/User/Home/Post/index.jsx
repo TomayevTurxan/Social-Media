@@ -3,7 +3,6 @@ import { styled } from "@mui/material/styles";
 import style from "./index.module.scss";
 import { Button } from "@mui/material";
 import { Input, Row } from "antd";
-import { UserContextItem } from "../../../../services/context/UserContext";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
@@ -13,11 +12,11 @@ import Typography from "@mui/material/Typography";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useFormik } from "formik";
 import moment from "moment/moment";
+import { UserContextItem } from "../../../../services/context/UserContext";
 import { UserContext } from "../../../../services/context/UsersContext";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
-
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
@@ -28,8 +27,8 @@ const ExpandMore = styled((props) => {
 }));
 
 const Post = () => {
-  let { user, setUser } = useContext(UserContextItem);
-  let { users, setUsers } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContextItem);
+  const { users, setUsers } = useContext(UserContext);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -37,7 +36,6 @@ const Post = () => {
       setUser(JSON.parse(storedUser));
     }
   }, [setUser]);
-  // console.log("userdiiii", users);
 
   const formik = useFormik({
     initialValues: {
@@ -46,34 +44,48 @@ const Post = () => {
     },
     onSubmit: async (values, actions) => {
       actions.resetForm();
-      console.log(values);
-      user.posts.push({
-        id: Date.now().toString(),
-        title: values.postText,
-        imgUrl: values.postImg,
-        likes: [],
-        comments: [],
-        createDate: Date.now(),
-      });
-      console.log("currentUser", user);
-      const response = await fetch(
-        `https://656dfda1bcc5618d3c245df9.mockapi.io/Users/${user.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
+      const updatedUser = {
+        ...user,
+        posts: [
+          ...user.posts,
+          {
+            id: Date.now().toString(),
+            title: values.postText,
+            imgUrl: values.postImg,
+            likes: [],
+            comments: [],
+            createDate: Date.now(),
           },
-          body: JSON.stringify(user),
+        ],
+      };
+
+      try {
+        const response = await fetch(
+          `https://656dfda1bcc5618d3c245df9.mockapi.io/Users/${user.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedUser),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Error updating user");
         }
-      );
-      if (!response.ok) {
-        throw new Error("error");
+
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setUser(updatedUser);
+      } catch (error) {
+        console.error(error);
       }
-      localStorage.setItem("user", JSON.stringify(user));
     },
   });
-  // console.log("userslardi", users);
-
+  const StyledButton = styled(Button)({
+    backgroundColor: "#2196F3", 
+    color: "#fff",
+  });
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
@@ -88,7 +100,7 @@ const Post = () => {
             style={{
               marginLeft: "10px",
             }}
-            src={user.profilePicture}
+            src={user?.profilePicture}
             className={style.customPrefix}
           />
           <div
@@ -115,9 +127,9 @@ const Post = () => {
               value={formik.values.postImg}
             />
           </div>
-          <Button type="submit" className={style.postBtn} variant="outlined">
-            Post
-          </Button>
+          <StyledButton type="submit" variant="outlined">
+              Post
+            </StyledButton>
         </div>
       </form>
       <Row
@@ -126,13 +138,16 @@ const Post = () => {
           margin: "20px auto",
         }}
       >
-        {user?.posts.map((post, idx) => {
-          return (
-            <Card style={{
+        {users.map((userA) =>
+          userA?.posts?.map((post, idx) => (
+            <Card
+              key={idx}
+              style={{
                 width: "60%",
                 margin: "20px 0px",
                 boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
-            }} key={idx}>
+              }}
+            >
               <Row
                 style={{
                   alignItems: "center",
@@ -142,20 +157,19 @@ const Post = () => {
                   style={{
                     width: "14%",
                   }}
-                  avatar={<img src={user.profilePicture} alt="" />}
+                  avatar={<img src={userA?.profilePicture} alt="" />}
                   action={
                     <IconButton aria-label="settings">
                       <MoreVertIcon />
                     </IconButton>
                   }
-                  subheader="September 14, 2016"
                 />
                 <h3
                   style={{
                     marginLeft: "28px",
                   }}
                 >
-                  {user.username}
+                  {userA?.username}
                 </h3>
               </Row>
               <CardMedia
@@ -167,24 +181,30 @@ const Post = () => {
                   borderRadius: "0px",
                   margin: "20px auto",
                   width: "100%",
-                  objectFit: "contain"
+                  objectFit: "contain",
                 }}
               />
               <CardContent>
                 <Typography variant="body2" color="text.secondary">
                   {post.title}
                 </Typography>
-                <Typography style={{
-                    margin:"10px 0px"
-                }} variant="body2" color="text.secondary">
-                  Date time: {moment(post.createDate).format('MMMM Do YYYY, h:mm:ss a')}
-                </Typography>
+                <Typography
+                      style={{
+                        margin: "10px 0px",
+                      }}
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      Date time:{" "}
+                      {moment(post.createDate).format(
+                        "MMMM Do YYYY, h:mm:ss a"
+                      )}
+                    </Typography>
               </CardContent>
             </Card>
-          );
-        })}
+          ))
+        )}
       </Row>
-      ;
     </>
   );
 };

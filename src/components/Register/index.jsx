@@ -20,6 +20,7 @@ import { loginSchema } from "../../validation/loginValidation";
 import { Snackbar } from "@mui/material";
 import { UserContext } from "../../services/context/UsersContext";
 import Swal from "sweetalert2";
+import { Col, Row } from "antd";
 
 function Copyright(props) {
   return (
@@ -170,125 +171,150 @@ export default function Register() {
         </Alert>
       </Snackbar>
       <ThemeProvider theme={defaultTheme}>
-        <Container component="main" maxWidth="xs">
+        <Container
+          style={{
+            margin: "80px auto",
+          }}
+          component="main"
+          maxWidth="xs"
+        >
           <CssBaseline />
-          <Box
-            sx={{
-              marginTop: 8,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign up
-            </Typography>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={formik.handleSubmit}
-              sx={{ mt: 3 }}
-            >
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    autoComplete="given-name"
-                    name="currentUsername"
-                    required
-                    fullWidth
-                    id="currentUsername"
-                    label="Username"
-                    autoFocus
-                    onChange={formik.handleChange}
-                    value={formik.values.currentUsername}
-                    error={
-                      formik.touched.currentUsername &&
-                      formik.errors.currentUsername
-                    }
-                    helperText={
-                      formik.touched.currentUsername &&
-                      formik.errors.currentUsername
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    autoComplete="given-FullName"
-                    name="FullName"
-                    required
-                    fullWidth
-                    id="FullName"
-                    label="FullName"
-                    autoFocus
-                    onChange={formik.handleChange}
-                    value={formik.values.FullName}
-                    error={formik.touched.FullName && formik.errors.FullName}
-                    helperText={
-                      formik.touched.FullName && formik.errors.FullName
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                    onChange={formik.handleChange}
-                    value={formik.values.email}
-                    error={formik.touched.email && formik.errors.email}
-                    helperText={formik.touched.email && formik.errors.email}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="new-password"
-                    onChange={formik.handleChange}
-                    value={formik.values.password}
-                    error={formik.touched.password && formik.errors.password}
-                    helperText={
-                      formik.touched.password && formik.errors.password
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={isAdmin}
-                        onChange={() => setisAdmin(!isAdmin)}
-                      />
-                    }
-                    label="isAdmin?"
-                  />
-                </Grid>
-              </Grid>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+          <Row>
+            <Col span={12}>
+              <img
+                style={{
+                  width: "100%",
+                }}
+                src="https://cdn.dribbble.com/users/37937/screenshots/4287886/media/6183740f0c2b3bbf083c8b7391973e1d.gif"
+                alt=""
+              />
+            </Col>
+            <Col span={12}>
+              <Box
+                sx={{
+                  marginTop: 8,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  width: "60%",
+                  margin: "0 auto",
+                }}
               >
-                Sign Up
-              </Button>
-              <Grid container justifyContent="flex-end">
-                <Link to="/Login">
-                  <Grid>Already have an account? Sign in</Grid>
-                </Link>
-              </Grid>
-            </Box>
-          </Box>
+                <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                  <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                  Sign up
+                </Typography>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={formik.handleSubmit}
+                  sx={{ mt: 3 }}
+                >
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        autoComplete="given-name"
+                        name="currentUsername"
+                        required
+                        fullWidth
+                        id="currentUsername"
+                        label="Username"
+                        autoFocus
+                        onChange={formik.handleChange}
+                        value={formik.values.currentUsername}
+                        error={
+                          formik.touched.currentUsername &&
+                          formik.errors.currentUsername
+                        }
+                        helperText={
+                          formik.touched.currentUsername &&
+                          formik.errors.currentUsername
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        autoComplete="given-FullName"
+                        name="FullName"
+                        required
+                        fullWidth
+                        id="FullName"
+                        label="FullName"
+                        autoFocus
+                        onChange={formik.handleChange}
+                        value={formik.values.FullName}
+                        error={
+                          formik.touched.FullName && formik.errors.FullName
+                        }
+                        helperText={
+                          formik.touched.FullName && formik.errors.FullName
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        onChange={formik.handleChange}
+                        value={formik.values.email}
+                        error={formik.touched.email && formik.errors.email}
+                        helperText={formik.touched.email && formik.errors.email}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="new-password"
+                        onChange={formik.handleChange}
+                        value={formik.values.password}
+                        error={
+                          formik.touched.password && formik.errors.password
+                        }
+                        helperText={
+                          formik.touched.password && formik.errors.password
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={isAdmin}
+                            onChange={() => setisAdmin(!isAdmin)}
+                          />
+                        }
+                        label="isAdmin?"
+                      />
+                    </Grid>
+                  </Grid>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Sign Up
+                  </Button>
+                  <Grid container justifyContent="flex-end">
+                    <Link to="/Login">
+                      <Grid>Already have an account? Sign in</Grid>
+                    </Link>
+                  </Grid>
+                </Box>
+              </Box>
+            </Col>
+          </Row>
           <Copyright sx={{ mt: 5 }} />
         </Container>
       </ThemeProvider>

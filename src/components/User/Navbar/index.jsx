@@ -27,7 +27,7 @@ const UserNavbar = () => {
       setUsers(data);
     });
   }, []);
-  
+
   const handleSearch = (searchTerm) => {
     const filtered = users.filter((item) =>
       item.username
@@ -106,7 +106,7 @@ const UserNavbar = () => {
     >
       <div className="container">
         <Row className="navbar">
-          <Col span={6}>
+          <Col xs={8} sm={6} md={6} lg={6} xl={6}>
             <Link
               style={{
                 marginRight: "20px",
@@ -122,7 +122,7 @@ const UserNavbar = () => {
               />
             </Link>
           </Col>
-          <Col span={14}>
+          <Col xs={16} sm={12} md={12} lg={12} xl={12}>
             <div
               style={{
                 position: "relative",
@@ -143,7 +143,8 @@ const UserNavbar = () => {
               />
               <Button
                 style={{
-                  backgroundColor: "#E1C340",
+                  backgroundColor: "white",
+                  border:"none"
                 }}
                 onClick={() => handleSearch(search)}
               >
@@ -216,7 +217,7 @@ const UserNavbar = () => {
               </ul>
             </div>
           </Col>
-          <Col span={4}>
+          <Col xs={24} sm={6} md={6} lg={6} xl={6}>
             <Link to="/user/UserPage">
               <span
                 style={{
